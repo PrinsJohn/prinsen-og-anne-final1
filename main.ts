@@ -9,6 +9,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.dør_lvl_1, function (sprite, ot
     sprites.destroy(Prins)
     sprites.destroyAllSpritesOfKind(SpriteKind.dør_lvl_1)
     sprites.destroyAllSpritesOfKind(SpriteKind.Skelet_lvl_1)
+    music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
+    fjern_skelet()
 })
 function Skelet () {
     while (RørDør == 1) {
@@ -759,7 +761,8 @@ function Del_5 () {
     story.spriteMoveToLocation(Prins, 85, 110, 100)
 }
 function Outro_til_rejse () {
-    game.splash("Prinsen var nu et skridt tættere på prinsessen")
+    game.showLongText("Prinsen var nu et skridt tættere på prinsessen", DialogLayout.Center)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Skelet_lvl_1)
     scene.setBackgroundImage(img`
         fffffff55ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffff
         fffff1551111ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeeefffffffffff
@@ -1099,7 +1102,9 @@ function Intro_til_final_boss () {
         f e f f f f f f f f f f f f f 1 
         f . . . . . . . . . . . . . f f 
         `, SpriteKind.Enemy)
-    Troldmand.setPosition(100, 95)
+    Troldmand.setPosition(120, 95)
+    Prins.changeScale(1, ScaleAnchor.Bottom)
+    Troldmand.changeScale(1, ScaleAnchor.Bottom)
     pause(1500)
     story.printText("Den mest avantgarde Prins " + Navn + " stod nu overfor Troldmand Dlop", 50, 35)
     pause(4000)
@@ -1116,6 +1121,8 @@ function Intro_til_final_boss () {
     story.spriteSayText(Prins, "Jeg dræber alle dine kloner og redder Prinsesse Anne!")
     pause(5000)
     pause(2000)
+    sprites.destroy(Troldmand)
+    sprites.destroy(Prins)
     scene.setBackgroundImage(img`
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -1238,10 +1245,7 @@ function Intro_til_final_boss () {
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         `)
-    pause(2000)
-    story.printText("Styr med piltasterne og skyd med space", 50, 50)
-    sprites.destroy(Troldmand)
-    sprites.destroy(Prins)
+    game.showLongText("Styr med piltasterne og skyd med space", DialogLayout.Center)
 }
 function DlopOutro () {
     story.clearAllText()
@@ -1448,9 +1452,14 @@ function DlopOutro () {
         `, SpriteKind.Player)
     Prins.setPosition(122, 82)
     Prins.setVelocity(-20, -8)
-    pause(2000)
+    for (let index = 0; index < 8; index++) {
+        music.play(music.melodyPlayable(music.footstep), music.PlaybackMode.UntilDone)
+        pause(250)
+    }
     Prins.changeScale(1, ScaleAnchor.Middle)
+    Prins.setVelocity(0, 0)
     game.showLongText("Nu kan prinsen endelig være sammen med sin prinsesse!", DialogLayout.Bottom)
+    music.play(music.melodyPlayable(music.baDing), music.PlaybackMode.UntilDone)
     Prins.startEffect(effects.hearts)
     Prinsesse.startEffect(effects.hearts)
     Prins.setImage(img`
@@ -1481,14 +1490,16 @@ function DlopOutro () {
     Prinsesse.setPosition(18, 94)
     pause(1000)
     music.setVolume(150)
-    story.printText("Den mest avantgarde Prins " + Navn + " og Prinsessen levede lykkeligt indtil finanskrisen i 2008", 10, 60, 15)
-    pause(10000)
+    story.printText("Den mest avantgarde Prins " + Navn + " og Prinsesse Anne levede lykkeligt indtil finanskrisen i 2008", 10, 60, 15)
+    pause(12000)
+    music.setVolume(230)
     game.setGameOverMessage(true, "Tak for spillet!")
     game.gameOver(true)
     game.reset()
 }
 function Final_boss () {
     story.clearAllText()
+    music.setVolume(230)
     scene.setBackgroundImage(img`
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -1836,14 +1847,38 @@ let Navn = ""
 let Skelet_lvl_1: Sprite = null
 let Prins: Sprite = null
 let RørDør = 0
+effects.blizzard.startScreenEffect()
 music.setVolume(150)
+music.play(music.stringPlayable("E B C5 A B G A F ", 95), music.PlaybackMode.UntilDone)
+Del_1()
+pause(5000)
+pause(2000)
+Del_2()
+pause(5000)
+Del_3()
+pause(7000)
+pause(5000)
+Del_4()
+pause(2000)
+pause(2000)
+Del_5()
+pause(2000)
+pause(2000)
+Intro_til_rejse_1()
+pause(5000)
+pause(1000)
+pause(1000)
+Intro_til_rejse_2()
+pause(5000)
+Intro_til_rejse_3()
+pause(2000)
+pause(2000)
 Mini_game_11()
 pause(1000)
 Outro_til_rejse()
 pause(500)
 Intro_til_final_boss()
-pause(5000)
-pause(2000)
+pause(500)
 Final_boss()
 game.onUpdateInterval(2000, function () {
     if (info.score() < 100) {
